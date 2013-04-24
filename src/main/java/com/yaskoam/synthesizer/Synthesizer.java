@@ -72,18 +72,4 @@ public class Synthesizer {
             IOUtils.closeQuietly(inputStream);
         }
     }
-
-    private static String getAllophoneText(String allophoneTextFileName) {
-        InputStream inputStream = null;
-        try {
-            inputStream = new FileInputStream(allophoneTextFileName);
-            return IOUtils.toString(inputStream);
-        }
-        catch (IOException e) {
-            throw new IllegalStateException("Can't load phoneme text file.", e);
-        }
-        finally {
-            IOUtils.closeQuietly(inputStream);
-        }
-    }
 }
