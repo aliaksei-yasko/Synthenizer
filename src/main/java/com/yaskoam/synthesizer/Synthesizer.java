@@ -7,26 +7,70 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 
+import com.yaskoam.dictionary.IntonationDictionary;
+import com.yaskoam.dictionary.PhoneticDictionary;
+import com.yaskoam.dictionary.StressDictionary;
 import com.yaskoam.sound.WavFile;
 import com.yaskoam.sound.WavUtils;
 import com.yaskoam.synthesizer.processors.AllophoneProcessor;
+import com.yaskoam.synthesizer.processors.IntonationProcessor;
+import com.yaskoam.synthesizer.processors.PhoneticProcessor;
 
 /**
  * @author Q-YAA
  */
 public class Synthesizer {
 
+    private static final String INTONATION_DICTIONARY_FILE_NAME = "base/dictionary/intonationDictionary.txt";
+
+    private static final String STRESS_DICTIONARY_FILE_NAME = "base/dictionary/stressDictionary.txt";
+
+    private static final String PHONETIC_DICTIONARY_FILE_NAME = "base/dictionary/phoneticDictionary.txt";
+
+    private static final String ALLOPHONE_BASE_DIR_NAME = "base/allophoneBase";
+
     public static void main(String[] args) {
 
-        String allophoneBaseDirName = args[0];
-        String allophoneTextFileName = args[1];
-        String resultFileName = args[2];
+        //String textFileName = args[0];
+        //String resultFileName = args[1];
 
-        AllophoneProcessor allophoneProcessor = new AllophoneProcessor(allophoneBaseDirName);
-        List<WavFile> wavFileList = allophoneProcessor.process(getAllophoneText(allophoneTextFileName));
+        String textFileName = "text/text.txt";
+        String resultFileName = "result.wav";
+
+        IntonationDictionary intonationDictionary = new IntonationDictionary(INTONATION_DICTIONARY_FILE_NAME);
+        StressDictionary stressDictionary = new StressDictionary(STRESS_DICTIONARY_FILE_NAME);
+        PhoneticDictionary phoneticDictionary = new PhoneticDictionary(PHONETIC_DICTIONARY_FILE_NAME);
+
+        IntonationProcessor intonationProcessor = new IntonationProcessor(intonationDictionary, stressDictionary);
+        String intonationText = intonationProcessor.process(readText(textFileName));
+
+        System.out.println(intonationText);
+
+        PhoneticProcessor phoneticProcessor = new PhoneticProcessor(phoneticDictionary);
+        String phonemeText = phoneticProcessor.process(intonationText);
+
+        System.out.println(phonemeText);
+
+        AllophoneProcessor allophoneProcessor = new AllophoneProcessor(ALLOPHONE_BASE_DIR_NAME);
+        List<WavFile> wavFileList = allophoneProcessor.process(phonemeText);
 
         WavFile resultWavFile = WavUtils.mergeFiles(wavFileList);
         resultWavFile.write(resultFileName);
+    }
+
+    private static String readText(String textFilePath) {
+        InputStream inputStream = null;
+
+        try {
+            inputStream = new FileInputStream(textFilePath);
+            return IOUtils.toString(inputStream);
+        }
+        catch (IOException e) {
+            throw new IllegalStateException(String.format("Can't read text file '%s'.", textFilePath), e);
+        }
+        finally {
+            IOUtils.closeQuietly(inputStream);
+        }
     }
 
     private static String getAllophoneText(String allophoneTextFileName) {
