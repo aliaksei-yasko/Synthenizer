@@ -1,0 +1,19 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile "commons-io:commons-io:1.3.2"
+}
+
+jar {
+
+    manifest {
+        attributes 'Implementation-Title': 'Synthesizer', 'Main-Class' : 'com.yaskoam.synthesizer.Synthesizer'
+    }
+
+    from configurations.compile.collect { zipTree(it) }
+}
