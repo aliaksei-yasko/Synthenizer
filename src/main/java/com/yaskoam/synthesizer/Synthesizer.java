@@ -12,9 +12,10 @@ import com.yaskoam.dictionary.PhoneticDictionary;
 import com.yaskoam.dictionary.StressDictionary;
 import com.yaskoam.sound.WavFile;
 import com.yaskoam.sound.WavUtils;
-import com.yaskoam.synthesizer.processors.AllophoneProcessor;
+import com.yaskoam.synthesizer.processors.AcousticProcessor;
 import com.yaskoam.synthesizer.processors.IntonationProcessor;
 import com.yaskoam.synthesizer.processors.PhoneticProcessor;
+import com.yaskoam.synthesizer.processors.TextProcessor;
 
 /**
  * @author Q-YAA
@@ -41,8 +42,11 @@ public class Synthesizer {
         StressDictionary stressDictionary = new StressDictionary(STRESS_DICTIONARY_FILE_NAME);
         PhoneticDictionary phoneticDictionary = new PhoneticDictionary(PHONETIC_DICTIONARY_FILE_NAME);
 
-        IntonationProcessor intonationProcessor = new IntonationProcessor(intonationDictionary, stressDictionary);
-        String intonationText = intonationProcessor.process(readText(textFileName));
+        TextProcessor textProcessor = new TextProcessor(stressDictionary);
+        String textWithStress = textProcessor.process(readText(textFileName));
+
+        IntonationProcessor intonationProcessor = new IntonationProcessor(intonationDictionary);
+        String intonationText = intonationProcessor.process(textWithStress);
 
         System.out.println(intonationText);
 
@@ -51,8 +55,8 @@ public class Synthesizer {
 
         System.out.println(phonemeText);
 
-        AllophoneProcessor allophoneProcessor = new AllophoneProcessor(ALLOPHONE_BASE_DIR_NAME);
-        List<WavFile> wavFileList = allophoneProcessor.process(phonemeText);
+        AcousticProcessor acousticProcessor = new AcousticProcessor(ALLOPHONE_BASE_DIR_NAME);
+        List<WavFile> wavFileList = acousticProcessor.process(phonemeText);
 
         WavFile resultWavFile = WavUtils.mergeFiles(wavFileList);
         resultWavFile.write(resultFileName);

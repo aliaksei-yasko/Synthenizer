@@ -11,13 +11,13 @@ import com.yaskoam.sound.WavFile;
 /**
  * @author Q-YAA
  */
-public class AllophoneProcessor {
+public class AcousticProcessor {
 
     private static final String ALLOPHONE_FILE_SUFFIX = ".wav";
 
     private String allphoneBaseDirName;
 
-    public AllophoneProcessor(String allophoneBaseDirName) {
+    public AcousticProcessor(String allophoneBaseDirName) {
         this.allphoneBaseDirName = allophoneBaseDirName;
     }
 
