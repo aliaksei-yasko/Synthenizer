@@ -30,8 +30,8 @@ public class DictionaryUtils {
 
                 if (!Strings.isNullOrEmpty(line)) {
 
-                    String from = line.split("\\->")[0].trim();
-                    String to = line.split("\\->")[1].trim();
+                    String from = line.split("\\->")[0].trim().replace("'", "");
+                    String to = line.split("\\->")[1].trim().replace("'", "");
 
                     dictionaryMap.put(from, to);
                 }

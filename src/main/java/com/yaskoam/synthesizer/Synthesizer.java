@@ -42,16 +42,16 @@ public class Synthesizer {
         StressDictionary stressDictionary = new StressDictionary(STRESS_DICTIONARY_FILE_NAME);
         PhoneticDictionary phoneticDictionary = new PhoneticDictionary(PHONETIC_DICTIONARY_FILE_NAME);
 
-        TextProcessor textProcessor = new TextProcessor(stressDictionary);
-        String textWithStress = textProcessor.process(readText(textFileName));
-
         IntonationProcessor intonationProcessor = new IntonationProcessor(intonationDictionary);
-        String intonationText = intonationProcessor.process(textWithStress);
+        String intonationText = intonationProcessor.process(readText(textFileName).toLowerCase());
 
-        System.out.println(intonationText);
+        TextProcessor textProcessor = new TextProcessor(stressDictionary);
+        String textWithStress = textProcessor.process(intonationText);
+
+        System.out.println(textWithStress);
 
         PhoneticProcessor phoneticProcessor = new PhoneticProcessor(phoneticDictionary);
-        String phonemeText = phoneticProcessor.process(intonationText);
+        String phonemeText = phoneticProcessor.process(textWithStress);
 
         System.out.println(phonemeText);
 

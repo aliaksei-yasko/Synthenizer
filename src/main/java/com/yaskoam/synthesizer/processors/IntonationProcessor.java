@@ -16,8 +16,6 @@ public class IntonationProcessor {
     }
 
     public String process(String text) {
-        text.toLowerCase();
-
         text = text.replace("«", "").replace("»", "");
 
         List<String> intonationSymbols = intonationDictionary.getAvailableIntonationSymbols();
